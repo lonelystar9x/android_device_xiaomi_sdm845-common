@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2017 The Android Open Source Project
- * Copyright (C) 2018-2022 The LineageOS Project
+ * Copyright (C) 2018-2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "android.hardware.biometrics.fingerprint@2.3-service.xiaomi_sdm845"
+#define LOG_TAG "android.hardware.biometrics.fingerprint@2.1-service.xiaomi_sdm845"
 
 #include "BiometricsFingerprint.h"
 
-#include <android-base/properties.h>
+#include <android/binder_manager.h>
 #include <android-base/strings.h>
 #include <cutils/properties.h>
 #include <hardware/hardware.h>
@@ -27,46 +27,29 @@
 #include <inttypes.h>
 #include <unistd.h>
 
-#include <cmath>
-#include <fstream>
+#include <aidl/android/hardware/power/IPower.h>
+#include <aidl/google/hardware/power/extension/pixel/IPowerExt.h>
 
-#define COMMAND_NIT 10
-#define PARAM_NIT_630_FOD 1
-#define PARAM_NIT_NONE 0
-
-#define DISPPARAM_PATH "/sys/devices/platform/soc/ae00000.qcom,mdss_mdp/drm/card0/card0-DSI-1/disp_param"
-#define DISPPARAM_HBM_FOD_ON "0x20000"
-#define DISPPARAM_HBM_FOD_OFF "0xE0000"
-
-#define FOD_STATUS_PATH "/sys/devices/virtual/touch/tp_dev/fod_status"
-#define FOD_STATUS_ON 1
-#define FOD_STATUS_OFF 0
-
-namespace {
-
-template <typename T>
-static void set(const std::string& path, const T& value) {
-    std::ofstream file(path);
-    file << value;
-}
-
-}  // anonymous namespace
+using ::aidl::android::hardware::power::IPower;
+using ::aidl::google::hardware::power::extension::pixel::IPowerExt;
 
 namespace android {
 namespace hardware {
 namespace biometrics {
 namespace fingerprint {
-namespace V2_3 {
+namespace V2_1 {
 namespace implementation {
 
 // Supported fingerprint HAL version
 static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 1);
+constexpr char kBoostHint[] = "LAUNCH";
+constexpr int32_t kBoostDurationMs = 2000;
 
 using RequestStatus = android::hardware::biometrics::fingerprint::V2_1::RequestStatus;
 
 BiometricsFingerprint* BiometricsFingerprint::sInstance = nullptr;
 
-BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevice(nullptr) {
+BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevice(nullptr), mBoostHintIsSupported(false), mBoostHintSupportIsChecked(false), mPowerHalExtAidl(nullptr) {
     sInstance = this; // keep track of the most recent instance
     mDevice = openHal();
     if (!mDevice) {
@@ -331,6 +314,102 @@ fingerprint_device_t* BiometricsFingerprint::openHal() {
     return fp_device;
 }
 
+int32_t BiometricsFingerprint::connectPowerHalExt() {
+    if (mPowerHalExtAidl) {
+        return android::NO_ERROR;
+    }
+    const std::string kInstance = std::string(IPower::descriptor) + "/default";
+    ndk::SpAIBinder pwBinder = ndk::SpAIBinder(AServiceManager_getService(kInstance.c_str()));
+    ndk::SpAIBinder pwExtBinder;
+    AIBinder_getExtension(pwBinder.get(), pwExtBinder.getR());
+    mPowerHalExtAidl = IPowerExt::fromBinder(pwExtBinder);
+    if (!mPowerHalExtAidl) {
+        ALOGE("failed to connect power HAL extension");
+        return -EINVAL;
+    }
+    ALOGI("connect power HAL extension successfully");
+    return android::NO_ERROR;
+}
+
+int32_t BiometricsFingerprint::checkPowerHalExtBoostSupport(const std::string &boost) {
+    if (boost.empty() || connectPowerHalExt() != android::NO_ERROR) {
+        return -EINVAL;
+    }
+    bool isSupported = false;
+    auto ret = mPowerHalExtAidl->isBoostSupported(boost.c_str(), &isSupported);
+    if (!ret.isOk()) {
+        ALOGE("failed to check power HAL extension hint: boost=%s", boost.c_str());
+        if (ret.getExceptionCode() == EX_TRANSACTION_FAILED) {
+            /*
+             * PowerHAL service may crash due to some reasons, this could end up
+             * binder transaction failure. Set nullptr here to trigger re-connection.
+             */
+            ALOGE("binder transaction failed for power HAL extension hint");
+            mPowerHalExtAidl = nullptr;
+            return -ENOTCONN;
+        }
+        return -EINVAL;
+    }
+    if (!isSupported) {
+        ALOGW("power HAL extension hint is not supported: boost=%s", boost.c_str());
+        return -EOPNOTSUPP;
+    }
+    ALOGI("power HAL extension hint is supported: boost=%s", boost.c_str());
+    return android::NO_ERROR;
+}
+
+int32_t BiometricsFingerprint::sendPowerHalExtBoost(const std::string &boost,
+                                                               int32_t durationMs) {
+    if (boost.empty() || connectPowerHalExt() != android::NO_ERROR) {
+        return -EINVAL;
+    }
+    auto ret = mPowerHalExtAidl->setBoost(boost.c_str(), durationMs);
+    if (!ret.isOk()) {
+        ALOGE("failed to send power HAL extension hint: boost=%s, duration=%d", boost.c_str(),
+              durationMs);
+        if (ret.getExceptionCode() == EX_TRANSACTION_FAILED) {
+            /*
+             * PowerHAL service may crash due to some reasons, this could end up
+             * binder transaction failure. Set nullptr here to trigger re-connection.
+             */
+            ALOGE("binder transaction failed for power HAL extension hint");
+            mPowerHalExtAidl = nullptr;
+            return -ENOTCONN;
+        }
+        return -EINVAL;
+    }
+    return android::NO_ERROR;
+}
+
+int32_t BiometricsFingerprint::isBoostHintSupported() {
+    int32_t ret = android::NO_ERROR;
+    if (mBoostHintSupportIsChecked) {
+        ret = mBoostHintIsSupported ? android::NO_ERROR : -EOPNOTSUPP;
+        return ret;
+    }
+    ret = checkPowerHalExtBoostSupport(kBoostHint);
+    if (ret == android::NO_ERROR) {
+        mBoostHintIsSupported = true;
+        mBoostHintSupportIsChecked = true;
+        ALOGI("Boost hint is supported");
+    } else if (ret == -EOPNOTSUPP) {
+        mBoostHintSupportIsChecked = true;
+        ALOGI("Boost hint is unsupported");
+    } else {
+        ALOGW("Failed to check the support of boost hint, ret %d", ret);
+    }
+    return ret;
+}
+
+int32_t BiometricsFingerprint::sendAuthenticatedBoostHint() {
+    int32_t ret = isBoostHintSupported();
+    if (ret != android::NO_ERROR) {
+        return ret;
+    }
+    ret = sendPowerHalExtBoost(kBoostHint, kBoostDurationMs);
+    return ret;
+}
+
 void BiometricsFingerprint::notify(const fingerprint_msg_t* msg) {
     BiometricsFingerprint* thisPtr =
         static_cast<BiometricsFingerprint*>(BiometricsFingerprint::getInstance());
@@ -391,6 +470,10 @@ void BiometricsFingerprint::notify(const fingerprint_msg_t* msg) {
                                            msg->data.authenticated.finger.gid, token)
                          .isOk()) {
                     ALOGE("failed to invoke fingerprint onAuthenticated callback");
+                } else {
+                    if (thisPtr->sendAuthenticatedBoostHint() != android::NO_ERROR) {
+                        ALOGE("failed to send authenticated boost");
+                    }
                 }
             } else {
                 // Not a recognized fingerprint
@@ -416,28 +499,12 @@ void BiometricsFingerprint::notify(const fingerprint_msg_t* msg) {
     }
 }
 
-Return<bool> BiometricsFingerprint::isUdfps(uint32_t /* sensorId */) {
-    std::string device = android::base::GetProperty("ro.product.device", "");
-    return device == "equuleus" || device == "ursa";
-}
-
-Return<void> BiometricsFingerprint::onFingerDown(uint32_t /* x */, uint32_t /* y */,
-                                                float /* minor */, float /* major */) {
-    set(DISPPARAM_PATH, DISPPARAM_HBM_FOD_ON);
-    mDevice->extCmd(mDevice, COMMAND_NIT, PARAM_NIT_630_FOD);
-    set(FOD_STATUS_PATH, FOD_STATUS_ON);
-    return Void();
-}
-
-Return<void> BiometricsFingerprint::onFingerUp() {
-    set(DISPPARAM_PATH, DISPPARAM_HBM_FOD_OFF);
-    mDevice->extCmd(mDevice, COMMAND_NIT, PARAM_NIT_NONE);
-    set(FOD_STATUS_PATH, FOD_STATUS_OFF);
-    return Void();
+Return<int32_t> BiometricsFingerprint::extCmd(int32_t cmd, int32_t param) {
+    return mDevice->extCmd(mDevice, cmd, param);
 }
 
 }  // namespace implementation
-}  // namespace V2_3
+}  // namespace V2_1
 }  // namespace fingerprint
 }  // namespace biometrics
 }  // namespace hardware
