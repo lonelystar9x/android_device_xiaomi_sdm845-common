@@ -8,9 +8,6 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# Get non-open-source specific aspects
-$(call inherit-product-if-exists, vendor/xiaomi/sdm845-common/sdm845-common-vendor.mk)
-
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
@@ -284,6 +281,10 @@ PRODUCT_PACKAGES += \
     android.hardware.light@2.0 \
     android.hardware.light@2.0.vendor
 
+# LiveDisplay
+PRODUCT_PACKAGES += \
+    vendor.lineage.livedisplay@2.0-service-sdm
+
 # Media
 PRODUCT_PACKAGES += \
     libavservices_minijail \
@@ -322,8 +323,7 @@ PRODUCT_PACKAGES += \
     android.system.net.netd@1.0 \
     android.system.net.netd@1.0.vendor \
     android.system.net.netd@1.1 \
-    android.system.net.netd@1.1.vendor \
-    netutils-wrapper-1.0
+    android.system.net.netd@1.1.vendor
 
 # Neural Network
 PRODUCT_PACKAGES += \
@@ -455,6 +455,10 @@ PRODUCT_PACKAGES += \
     android.hardware.thermal@2.0 \
     android.hardware.thermal@2.0.vendor
 
+# Trust HAL
+PRODUCT_PACKAGES += \
+    vendor.lineage.trust@1.0-service
+
 # USB
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.0-service \
@@ -517,3 +521,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BOOT_JARS += \
     WfdCommon
+
+# Inherit the proprietary files
+$(call inherit-product, vendor/xiaomi/sdm845-common/sdm845-common-vendor.mk)
