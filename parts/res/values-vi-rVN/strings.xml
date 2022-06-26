@@ -60,6 +60,8 @@
     <string name="dirac_preset_metal">Kim loại</string>
     <!-- Dirac : QS tile  -->
     <string name="dirac_qs_tile_title">Âm thanh MI</string>
+    <string name="on">Bật</string>
+    <string name="off">Tắt</string>
     <!-- Thermal profiles -->
     <string name="thermal_title">Cấu hình hiệu năng</string>
     <string name="thermal_summary">Điều chỉnh cấu hình cho mỗi ứng dụng để có hiệu suất tối ưu</string>
@@ -70,7 +72,7 @@
     <string name="thermal_dialer">Trình quay số</string>
     <string name="thermal_gaming">Trò chơi</string>
     <string name="thermal_streaming">Phát trực tuyến</string>
-     <!-- Raise to wake strings-->
-    <string name="raise_to_wake_gesture_title">sáng màn hình</string>
+    <!-- Raise to wake strings-->
+    <string name="raise_to_wake_gesture_title">Sáng màn hình</string>
     <string name="raise_to_wake_gesture_summary">Đánh thức thiết bị thay vì thông báo rung</string>
 </resources>

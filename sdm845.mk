@@ -92,7 +92,6 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.0.vendor \
     android.hardware.audio.service \
     android.hardware.soundtrigger@2.2-impl:32 \
-    audio.a2dp.default \
     audio.r_submix.default \
     audio.usb.default \
     libqcompostprocbundle \
@@ -281,10 +280,6 @@ PRODUCT_PACKAGES += \
     android.hardware.light@2.0 \
     android.hardware.light@2.0.vendor
 
-# LiveDisplay
-PRODUCT_PACKAGES += \
-    vendor.lineage.livedisplay@2.0-service-sdm
-
 # Media
 PRODUCT_PACKAGES += \
     libavservices_minijail \
@@ -372,9 +367,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/qti_whitelist.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/qti_whitelist.xml \
     $(LOCAL_PATH)/permissions/system_ext-privapp-permissions-qti.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-qti.xml
 
-# Quick Tap
-TARGET_SUPPORTS_QUICK_TAP := true
-
 # Radio
 PRODUCT_PACKAGES += \
     android.hardware.radio@1.0 \
@@ -454,10 +446,6 @@ PRODUCT_PACKAGES += \
     android.hardware.thermal@1.1.vendor \
     android.hardware.thermal@2.0 \
     android.hardware.thermal@2.0.vendor
-
-# Trust HAL
-PRODUCT_PACKAGES += \
-    vendor.lineage.trust@1.0-service
 
 # USB
 PRODUCT_PACKAGES += \
