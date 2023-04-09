@@ -202,6 +202,9 @@ persist.vendor.data.iwlan.enable=true
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
 
+# SPU
+vendor.gatekeeper.disable_spu=true
+
 # Radio
 persist.vendor.radio.enableadvancedscan=false
 
