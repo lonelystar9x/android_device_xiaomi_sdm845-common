@@ -40,7 +40,7 @@ vendor.audio.feature.hdmi_passthrough.enable=true
 vendor.audio.feature.hfp.enable=true
 vendor.audio.feature.hifi_audio.enable=false
 vendor.audio.feature.hwdep_cal.enable=false
-vendor.audio.feature.incall_music.enable=false
+vendor.audio.feature.incall_music.enable=true
 vendor.audio.feature.keep_alive.enable=false
 vendor.audio.feature.kpi_optimize.enable=true
 vendor.audio.feature.maxx_audio.enable=false
@@ -59,7 +59,7 @@ vendor.audio.feature.wsa.enable=false
 vendor.audio.flac.sw.decoder.24bit=true
 vendor.audio_hal.in_period_size=144
 vendor.audio.hal.output.suspend.supported=false
-vendor.audio_hal.period_size=192
+vendor.audio_hal.period_size=240
 vendor.audio_hal.period_multiplier=3
 vendor.audio.hw.aac.encoder=false
 vendor.audio.noisy.broadcast.delay=600
@@ -101,9 +101,12 @@ persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.enable.splita2dp=true
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 vendor.qcom.bluetooth.soc=cherokee
+persist.vendor.bt.aac_frm_ctl.enabled=true
+persist.bt.enableAptXHD=true
+persist.service.btui.use_aptx=1
 
 # Camera
-vendor.camera.aux.packagelist=com.android.camera,org.codeaurora.snapcam,org.lineageos.aperture,org.lineageos.aperture.dev
+vendor.camera.aux.packagelist=org.lineageos.aperture,org.lineageos.aperture.dev,com.crdroid.faceunlock
 
 # Charger
 ro.charger.enable_suspend=true
@@ -120,6 +123,16 @@ ro.crypto.volume.filenames_mode=aes-256-cts
 
 # Display post-processing
 ro.vendor.display.cabl=2
+debug.sf.disable_client_composition_cache=1
+debug.sf.disable_backpressure=1
+debug.sf.enable_egl_image_tracker=0
+ro.surface_flinger.protected_contents=true
+ro.hwui.render_ahead=2
+vendor.display.perf_hint_window=50
+ro.surface_flinger.set_idle_timer_ms=80
+ro.surface_flinger.set_touch_timer_ms=200
+ro.surface_flinger.set_display_power_timer_ms=1000
+ro.surface_flinger.use_content_detection_for_refresh_rate=true
 
 # DPM
 persist.vendor.dpm.idletimer.mode=default
@@ -128,20 +141,37 @@ persist.vendor.dpmhalservice.enable=1
 # DRM
 drm.service.enabled=true
 
+# Fling
+ro.min.fling_velocity=70 
+ro.max.fling_velocity=21000
+ro.vendor.qti.cgroup_follow.enable=true 
+persist.vendor.qti.inputopts.enable=true 
+persist.vendor.qti.inputopts.movetouchslop=0.6 
+ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
+
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
 
+# FS-verity
+ro.apk_verity.mode=2
+
 # Graphics
-debug.egl.hw=0
-debug.sf.hw=0
+debug.egl.hw=1
+debug.sf.hw=1
+debug.gralloc.enable_fb_ubwc=1
 ro.hardware.egl=adreno
 ro.hardware.vulkan=adreno
 ro.opengles.version=196610
-
+ro.config.avoid_gfx_accel=true
+ 
 # IMS
 persist.dbg.volte_avail_ovr=1
 persist.dbg.vt_avail_ovr=1
 persist.dbg.wfc_avail_ovr=1
+persist.vendor.ims.disableADBLogs=1
+persist.vendor.ims.disableDebugLogs=1
+persist.vendor.ims.disableIMSLogs=1
+persist.vendor.ims.disableQXDMLogs=1
 
 # Listen
 ro.audio.soundtrigger=sva
@@ -173,8 +203,28 @@ ro.telephony.iwlan_operation_mode=legacy
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
 
+# Phantom process monitoring
+sys.fflag.override.settings_enable_monitor_phantom_procs=false
+
 # Radio
 persist.vendor.radio.enableadvancedscan=false
+
+# SPU
+vendor.gatekeeper.disable_spu=true
+
+# Touch Hax 
+touch.size.scale=1
+touch.size.bias=0
+touch.size.isSummed=0
+touch.pressure.scale=0.001
+touch.distance.calibration=none
+touch.distance.scale=0
+touch.coverage.calibration=box
+touch.gestureMode=spots
+MultitouchSettleInterval=1ms
+MultitouchMinDistance=1px
+TapInterval=1ms
+TapSlop=1px
 
 # USB
 vendor.usb.diag.func.name=diag
