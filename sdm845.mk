@@ -181,6 +181,10 @@ PRODUCT_PACKAGES += \
     f2fs_io \
     check_f2fs
 
+# Fastcharge
+PRODUCT_PACKAGES += \
+    vendor.lineage.fastcharge@1.0-service.xiaomi
+
 # fastbootd
 PRODUCT_PACKAGES += \
     fastbootd
