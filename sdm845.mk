@@ -289,6 +289,17 @@ PRODUCT_PACKAGES += \
     libprotobuf-cpp-full-vendorcompat \
     libprotobuf-cpp-lite-vendorcompat
 
+# Quick Tap
+ifeq ($(TARGET_SUPPORTS_QUICK_TAP),true)
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.columbus.use_ap_sensor=true
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/quick_tap.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/quick_tap.xml
+else
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.columbus.use_ap_sensor=false
+endif
+
 # QTI
 PRODUCT_PACKAGES += \
     libqti_vndfwk_detect.vendor
@@ -321,7 +332,7 @@ PRODUCT_COPY_FILES += \
 # Sensors
 PRODUCT_PACKAGES += \
     android.frameworks.sensorservice@1.0.vendor \
-    android.hardware.sensors@1.0-impl:64 \
+    android.hardware.sensors@1.0-impl-xiaomi \
     android.hardware.sensors@1.0-service \
     libsensorndkbridge
 
