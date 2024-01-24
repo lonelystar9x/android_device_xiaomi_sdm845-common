@@ -26,10 +26,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import org.lineageos.settings.dirac.DiracActivity;
+import org.lineageos.settings.thermal.ThermalActivity;
 
 public class TileEntryActivity extends Activity {
     private static final String TAG = "TileEntryActivity";
     private static final String DIRAC_TILE = "org.lineageos.settings.dirac.DiracTileService";
+    private static final String THERMAL_TILE = "org.lineageos.settings.thermal.ThermalTileService";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class TileEntryActivity extends Activity {
         switch (sourceClass.getClassName()) {
             case DIRAC_TILE:
                 openActivitySafely(new Intent(this, DiracActivity.class));
+                break;
+            case THERMAL_TILE:
+                openActivitySafely(new Intent(this, ThermalActivity.class));
                 break;
             default:
                 finish();

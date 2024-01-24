@@ -10,10 +10,7 @@ allow xiaomiparts_app audioserver_service:service_manager find;
 # Allow reading and writing shared prefs
 allow xiaomiparts_app system_app_data_file:dir create_dir_perms;
 allow xiaomiparts_app system_app_data_file:{ file lnk_file } create_file_perms;
-
-allow xiaomiparts_app audio_service:service_manager { find } ;
-allow xiaomiparts_app media_session_service:service_manager { find } ;
-allow xiaomiparts_app mediaserver_service:service_manager { find } ;
+allow xiaomiparts_app mediaserver_service:service_manager { find };
 
 # Allow binder communication with gpuservice
 binder_call(xiaomiparts_app, gpuservice)
@@ -24,8 +21,8 @@ allow xiaomiparts_app cgroup:file rw_file_perms;
 # Allow XiaomiParts to write to sysfs_thermal
 allow xiaomiparts_app sysfs_thermal:file w_file_perms;
 
+# Allow XiaomiParts to read and write sysfs_graphics
+allow xiaomiparts_app sysfs_fps:file r_file_perms;
+
 # Allow XiaomiParts to get settingsdebug.instant.packages prop
 get_prop(xiaomiparts_app, settingslib_prop)
-
-# Allow XiaomiParts to find mediaserver
-allow xiaomiparts_app mediaserver_service:service_manager { find };

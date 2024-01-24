@@ -157,6 +157,10 @@ on boot
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/device/extldo
     chmod 0660 /sys/class/rfkill/rfkill0/device/extldo
 
+    # Allow system to read measured screen FPS
+    chown system graphics /sys/class/drm/sde-crtc-0/measured_fps
+    chmod 0660 /sys/class/drm/sde-crtc-0/measured_fps
+
     # This location is used by QCRIL to host UNIX domain
     # socket files used for internal IPC within QCRIL
     # modules
@@ -480,13 +484,20 @@ on property:sys.boot_completed=1
     write /sys/block/sdf/queue/nr_requests 128
     write /sys/block/sdf/queue/iostats 1
 
+    # F2FS tuning: issue discard commands up to 128MB
+    write /sys/block/dm-7/queue/discard_max_bytes 134217728
+
+    # Block layer tuning: discard chunk size up to 128MB
+    # Otherwise, contiguous discards can be merged
+    write /sys/block/sda/queue/discard_max_bytes 134217728
+
     # Enable ZRAM
     swapon_all /vendor/etc/fstab.qcom
 
-    start qcom-post-boot
-
     # Enable suspend to RAM
     write /sys/power/mem_sleep "deep"
+
+    start qcom-post-boot
 
 # corefile limit
 on property:persist.debug.trace=1

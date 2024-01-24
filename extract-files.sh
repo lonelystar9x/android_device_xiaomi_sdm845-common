@@ -23,16 +23,18 @@ source "${HELPER}"
 
 function blob_fixup() {
     case "${1}" in
-        vendor/lib/camera/components/com.qti.node.watermark.so)
-            grep -q "libpiex_shim.so" "${2}" || ${PATCHELF} --add-needed "libpiex_shim.so" "${2}"
+        system_ext/lib64/lib-imsvideocodec.so)
+            grep -q "libgui_shim.so" "${2}" || ${PATCHELF} --add-needed "libgui_shim.so" "${2}"
             ;;
         vendor/bin/pm-service)
             grep -q libutils-v33.so "${2}" || "${PATCHELF}" --add-needed "libutils-v33.so" "${2}"
             ;;
+        vendor/lib/camera/components/com.qti.node.watermark.so)
+            grep -q "libpiex_shim.so" "${2}" || ${PATCHELF} --add-needed "libpiex_shim.so" "${2}"
+            ;;
         vendor/lib/mediadrm/libwvdrmengine.so | vendor/lib64/mediadrm/libwvdrmengine.so | vendor/lib64/libwvhidl.so)
             ${PATCHELF}  --replace-needed "libprotobuf-cpp-lite-3.9.1.so" "libprotobuf-cpp-full-3.9.1.so" "${2}"
             ;;
-
     esac
 }
 

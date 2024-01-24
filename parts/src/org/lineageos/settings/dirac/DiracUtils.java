@@ -31,10 +31,10 @@ import java.util.List;
 public class DiracUtils {
 
     private static DiracUtils mInstance;
-    protected static DiracSound mDiracSound;
+    private DiracSound mDiracSound;
     private MediaSessionManager mMediaSessionManager;
     private Handler mHandler = new Handler();
-    static Context mContext;
+    private Context mContext;
 
     public DiracUtils(Context context) {
         mContext = context;
@@ -127,11 +127,32 @@ public class DiracUtils {
         }
     }
 
-    public void setHeadsetType(int paramInt) {
-        mDiracSound.setHeadsetType(paramInt);
+    public String getLevel() {
+        String selected = "";
+        for (int band = 0; band <= 6; band++) {
+            int temp = (int) mDiracSound.getLevel(band);
+            selected += String.valueOf(temp);
+            if (band != 6) selected += ",";
+        }
+        return selected;
     }
 
-    protected static void setScenario(int sceneInt) {
+    public void setHeadsetType(int paramInt) {
+         mDiracSound.setHeadsetType(paramInt);
+    }
+
+    public boolean getHifiMode() {
+        AudioManager audioManager = mContext.getSystemService(AudioManager.class);
+        return audioManager.getParameters("hifi_mode").contains("true");
+    }
+
+    public void setHifiMode(int paramInt) {
+        AudioManager audioManager = mContext.getSystemService(AudioManager.class);
+        audioManager.setParameters("hifi_mode=" + (paramInt == 1 ? true : false));
+        mDiracSound.setHifiMode(paramInt);
+    }
+
+    public void setScenario(int sceneInt) {
         mDiracSound.setScenario(sceneInt);
     }
 }
