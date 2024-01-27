@@ -14,10 +14,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Ambient settings -->
     <string name="ambient_enable">Use ambient display</string>
     <string name="doze_summary">Advanced Ambient Display Preferences</string>
+
+    <!-- Custom seekbar -->
+    <string name="custom_seekbar_value">Value: <xliff:g id="v">%s</xliff:g></string>
+    <string name="custom_seekbar_default_value">Default</string>
+    <string name="custom_seekbar_default_value_to_set">Default value: <xliff:g id="v">%s</xliff:g>\nLong press to set</string>
+    <string name="custom_seekbar_default_value_is_set">Default value is set</string>
 
     <!-- Dirac settings -->
     <string name="dirac_enable">Enable dirac</string>
@@ -109,4 +115,15 @@
 
     <!-- FPS Counter -->
     <string name="fps_info_title">FPS Counter</string>
+
+    <!-- Vibration Intensity -->
+    <string name="haptic_warning">Setting-up haptic level too high may cause permanent hardware damage, use at your own risk</string>
+    <string name="haptic_summary">Customize vibration intensity</string>
+    <string name="vibrator_intensity_control">Vibration Intensity Control</string>
+    <string name="vmax_override_mode_title">Override Vibration Intensity</string>
+    <string name="vmax_override_mode_summary">Overrides vibration intensity value for all notification events</string>
+    <string name="system_strength_title">System Vibration strength</string>
+    <string name="call_strength_title">Call Vibration strength</string>
+    <string name="notif_strength_title">Notification Vibration strength</string>
+
 </resources>

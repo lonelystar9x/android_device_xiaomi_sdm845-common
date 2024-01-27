@@ -1,2 +1,6 @@
 # Battery Health
 r_dir_file(system_app, sysfs_battery_supply);
+
+# Vibrator
+allow system_app sysfs_vibrator:file rw_file_perms;
+allow system_app sysfs_vibrator:dir search;
