@@ -19,6 +19,17 @@
     <string name="ambient_enable">Use ambient display</string>
     <string name="doze_summary">Advanced Ambient Display Preferences</string>
 
+    <!-- Speaker & Microphone -->
+    <string name="audio_title">Audio Amplification</string>
+    <string name="audio_summary">Sound control settings</string>
+    <string name="category_speaker">Speaker &amp; Microphone</string>
+    <string name="earpiece_gain">Earpiece gain (Calls)</string>
+    <string name="earpiece_gain_summary">Define the amplitude of the earpiece speaker</string>
+    <string name="headphone_gain">Headphone gain</string>
+    <string name="headphone_gain_summary">Define the amplitude of the headphone</string>
+    <string name="microphone_gain">Microphone gain</string>
+    <string name="microphone_gain_summary">Define the amplitude of the microphone</string>
+
     <!-- Custom seekbar -->
     <string name="custom_seekbar_value">Value: <xliff:g id="v">%s</xliff:g></string>
     <string name="custom_seekbar_default_value">Default</string>

@@ -157,7 +157,7 @@ on boot
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/device/extldo
     chmod 0660 /sys/class/rfkill/rfkill0/device/extldo
 
-# Vibrator
+    # Vibrator
     chown system system /sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pmi8998@3:qcom,haptics@c000/leds/vibrator/vmax_override
     chmod 0660 /sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pmi8998@3:qcom,haptics@c000/leds/vibrator/vmax_override
     write /sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pmi8998@3:qcom,haptics@c000/leds/vibrator/vmax_override 1
@@ -474,6 +474,15 @@ on property:persist.vendor.sys.pil_proxy_timeout=*
 
 on property:sys.boot_completed=1
     write /dev/kmsg "Boot completed "
+
+    # Audio gain permissions
+    chown system system /sys/kernel/sound_control/headphone_gain
+    chown system system /sys/kernel/sound_control/mic_gain
+    chown system system /sys/kernel/sound_control/earpiece_gain
+    restorecon_recursive /sys/kernel/sound_control
+    chmod 0660 /sys/kernel/sound_control/headphone_gain
+    chmod 0660 /sys/kernel/sound_control/mic_gain
+    chmod 0660 /sys/kernel/sound_control/earpiece_gain
 
     # Reset read ahead for dm-0 and dm-1 to 512kb
     write /sys/block/dm-0/queue/read_ahead_kb 512

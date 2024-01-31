@@ -23,12 +23,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.provider.Settings;
 
 import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.dirac.DiracUtils;
 import org.lineageos.settings.thermal.ThermalUtils;
 import org.lineageos.settings.preferences.FileUtils;
+import org.lineageos.settings.soundcontrol.SoundControlSettings;
 import org.lineageos.settings.vibration.VibratorStrengthPreference;
 import org.lineageos.settings.vibration.CallVibratorStrengthPreference;
 import org.lineageos.settings.vibration.NotifVibratorStrengthPreference;
@@ -67,5 +69,14 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         VibratorStrengthPreference.restore(context);
         CallVibratorStrengthPreference.restore(context);
         NotifVibratorStrengthPreference.restore(context);
+
+        int gain = Settings.Secure.getInt(context.getContentResolver(),
+                SoundControlSettings.PREF_HEADPHONE_GAIN, 4);
+        FileUtils.setValue(SoundControlSettings.HEADPHONE_GAIN_PATH, gain + " " + gain);
+        FileUtils.setValue(SoundControlSettings.MICROPHONE_GAIN_PATH, Settings.Secure.getInt(context.getContentResolver(),
+                SoundControlSettings.PREF_MICROPHONE_GAIN, 0));
+        FileUtils.setValue(SoundControlSettings.EARPIECE_GAIN_PATH, Settings.Secure.getInt(context.getContentResolver(),
+                SoundControlSettings.PREF_EARPIECE_GAIN, 0));
+
     }
 }

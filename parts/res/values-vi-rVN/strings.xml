@@ -23,6 +23,16 @@
     <string name="custom_seekbar_default_value">Mặc định</string>
     <string name="custom_seekbar_default_value_to_set">Giá trị mặc định: <xliff:g id="v">%s</xliff:g>\nNhấn giữ để đặt</string>
     <string name="custom_seekbar_default_value_is_set">Đã đặt giá trị mặc định</string>
+    <!-- Speaker & Microphone -->
+    <string name="audio_title">Khuếch đại âm thanh</string>
+    <string name="audio_summary">Cài đặt điều khiển âm thanh</string>
+    <string name="category_speaker">Loa &amp; Micrô</string>
+    <string name="earpiece_gain">Tăng loa thoại (Cuộc gọi)</string>
+    <string name="earpiece_gain_summary">Điều chỉnh biên độ của loa thoại</string>
+    <string name="headphone_gain">Tăng tai nghe</string>
+    <string name="headphone_gain_summary">Điều chỉnh biên độ của tai nghe</string>
+    <string name="microphone_gain">Tăng micrô</string>
+    <string name="microphone_gain_summary">Điều chỉnh biên độ của micrô</string>
     <!-- Dirac settings -->
     <string name="dirac_enable">Bật tăng cường âm thanh</string>
     <string name="dirac_title">Tăng cường âm thanh Mi</string>
