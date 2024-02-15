@@ -359,4 +359,6 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.vorbis.decoder" type="audio/raw" update="true" rank="1"/>
     </Decoders>
     <Include href="media_codecs_google_video.xml" />
+    <!-- Dolby Audio -->
+    <Include href="media_codecs_dolby_audio.xml" />
 </MediaCodecs>

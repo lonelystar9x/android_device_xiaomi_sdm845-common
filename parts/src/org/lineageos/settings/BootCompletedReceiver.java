@@ -27,6 +27,7 @@ import android.provider.Settings;
 
 import androidx.preference.PreferenceManager;
 
+import org.lineageos.settings.dolby.DolbyUtils;
 import org.lineageos.settings.thermal.ThermalUtils;
 import org.lineageos.settings.preferences.FileUtils;
 import org.lineageos.settings.soundcontrol.SoundControlSettings;
@@ -59,6 +60,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         restore(VibratorOverrideModeSwitch.getFile(), enabled);
 
         if (DEBUG) Log.d(TAG, "Received boot completed intent");
+        DolbyUtils.getInstance(context);
         ThermalUtils.startService(context);
         VibratorStrengthPreference.restore(context);
         CallVibratorStrengthPreference.restore(context);
