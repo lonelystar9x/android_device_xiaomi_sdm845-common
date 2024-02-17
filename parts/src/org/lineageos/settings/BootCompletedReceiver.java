@@ -27,7 +27,6 @@ import android.provider.Settings;
 
 import androidx.preference.PreferenceManager;
 
-import org.lineageos.settings.dirac.DiracUtils;
 import org.lineageos.settings.thermal.ThermalUtils;
 import org.lineageos.settings.preferences.FileUtils;
 import org.lineageos.settings.soundcontrol.SoundControlSettings;
@@ -60,11 +59,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         restore(VibratorOverrideModeSwitch.getFile(), enabled);
 
         if (DEBUG) Log.d(TAG, "Received boot completed intent");
-        try {
-            DiracUtils.getInstance(context);
-        } catch (Exception e) {
-            Log.d(TAG, "Dirac is not present in system");
-        }
         ThermalUtils.startService(context);
         VibratorStrengthPreference.restore(context);
         CallVibratorStrengthPreference.restore(context);
