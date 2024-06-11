@@ -1,0 +1,5 @@
+# Audio gain
+type sysfs_audio_gain, sysfs_type, fs_type;
+
+# FPS Tile
+type sysfs_fps, sysfs_type, fs_type;
